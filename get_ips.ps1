@@ -7,5 +7,5 @@ $output_file='./server_ips.txt'
 
 foreach($line in Get-Content $server_list) {
 	$ip_add = ((Test-Connection -comp $line -Count 1).ipv4address.ipaddressToString)
-	Write-Host $line : $ip_add
+	"${line} : ${ip_add}" | Out-File -Append $output_file
 }
