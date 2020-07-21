@@ -5,7 +5,7 @@
 # various $PT_ variables to normal variables
 #
 # Date: 	  20/11/2019
-# Author: 	Jasper Connery
+# Author: 	Adrift42
 #
 # Updated:  05/12/2019
 #   added check to exit script if server contains drives with more than 1 partition - to be removed
