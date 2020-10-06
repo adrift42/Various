@@ -50,9 +50,9 @@ fi
 
 while read p; do
   if [ $count == 1 ]; then
-    tmux new-session -d -s $sess "ssh $p"
+    tmux new-session -d -s $sess "${ssh_command} ${p}"
   else
-    tmux split-window -h "ssh $p"
+    tmux split-window -h "${ssh_command} ${p}"
     tmux select-layout tiled
   fi
   count=$((count+1))
