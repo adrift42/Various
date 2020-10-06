@@ -44,7 +44,7 @@ done
 
 count=1
 
-if [ ! -z "${ssh_command}" ]; then
+if [ -z "${ssh_command}" ]; then
 	ssh_command='ssh'
 fi
 
