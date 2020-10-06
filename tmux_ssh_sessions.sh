@@ -1,4 +1,24 @@
 #!/bin/bash
+#
+# Author: 		adrift42
+#
+# Date created:		06/10/2020
+#
+# Description:		Load up a tmux session with a whole lot of panes automatically
+#			sshing to a list of servers provided. Has a few options to customise.
+#
+# Options (required):	-f	takes a plaintext file with a list of servers (one per line). These
+#				will be used to load up a tmux pane per server and kick off an ssh
+#				connection
+#			-s 	session name for tmux - needs to be unique if you have other tmux 
+#				sessions running
+# Options (optional):	-S	instead of the normal ssh command, adds on a keepalive argument if
+#				you are expecting to be connected for a long time - prevents the ssh
+#				connection from timing out. WARNING: can be considered not very 
+#				security-conscious.
+#
+# Please offer any thoughts or additions either via issues or PRs
+#
 
 while getopts 'f:s:S' OPTION; do
   case "$OPTION" in
