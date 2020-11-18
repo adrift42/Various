@@ -4,20 +4,20 @@
 # provided alert value
 #
 # Created for:
-# ------------ Nagios monitoring via Puppet
+# ------------ Nagios monitoring
 #
 # Created date and author:
 # ------------ 18/03/2020, adrift42
 #
 # Updated on and by:
-# ------------
+# ------------ 18/11/2020, adrift42
 #
 # Usage:
-# -----  This script requires three arguments, the first being an identifier to show what the alert context is (e.g. Prod DB), the second being
-#        the (full-path) file to grep through, and the third is a comma-delimited string of phrases or words to query, also containing the
-#        nagios alert state separated from the phrase by a hash #. 
+# -----  This script requires four arguments, the first being an identifier to show what the alert context is (e.g. Prod DB), the second being
+#        the (full-path) file to grep through, the third is a comma-delimited string of phrases or words to query, also containing the
+#        nagios alert state separated from the phrase by a hash #, and the fourth defines whether the file must exist or not, at all times.
 #        E.g:
-#             grep_file.sh '/var/log/mysql/mysql.log' 'Snapshot failed|Crit,No disk space|Crit,Timeout|Warning'
+#             grep_file.sh 'Prod DB' '/var/log/mysql/mysql.log' 'Snapshot failed|Crit,No disk space|Crit,Timeout|Warning'
 #
 #        Each 'query' is processed in the order they appear - i.e. if 'Snapshot failed' is found, it will alert on that 
 #	       and exit the script, not continuing to search for 'No disk space' or 'Timeout'. 
@@ -36,16 +36,20 @@ IFS=','
 # Alert identifier
 context=$1
 # Log file to grep through
-file=$1
+file=$2
 # Assign phrases and nagios alert states to an array of strings
-queries=($2)
+queries=($3)
+# Determine whether the file must exist or not
+file_must_exist=$4
 # Default exit code value - relates to UNKOWN alert for nagios
 exit_code=3
 
 # If file for grepping does not exist, exit script and alert
-if [ ! -f $file ]; then
-  echo "File ${file} does not exist!! Resolve syntax error for nagios check!"
-  exit 3
+if [ "$file_must_exist" = true ]; then
+  if [ ! -f $file ]; then
+    echo "File ${file} does not exist!! Resolve syntax error for nagios check!"
+    exit 3
+  fi
 fi
 
 # Loop through array searching for each query, ordered by first-in,first-checked
@@ -56,14 +60,14 @@ for((i=0; i<${#queries[@]}; ++i)); do
   
   # Set relevant exit codes
   if [[ ${state,,} == *"crit"* ]]; then
-    exit_code=1
-  elif [[ ${state,,} == *"warn"* ]]; then
     exit_code=2
+  elif [[ ${state,,} == *"warn"* ]]; then
+    exit_code=1
   fi
   
   # Search through file for obtained query, alerting and exiting script if found. ${foo^^} converts $foo value to uppercase, ${foo,,} to lowercase
   if grep -Fqi "${query}" $file; then
-    echo "${state^^}: Gazette ${query,,}!"
+    echo "${state^^}: ${context} ${query,,}!"
     IFS=$OIFS
     exit $exit_code
   fi
