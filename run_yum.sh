@@ -1,11 +1,16 @@
 #! /bin/bash
 #
-#
-#
 # This script initialises yum-cron based upon the /etc/yum/yum-cron.conf
 # settings and will be called through cronjob yum_monthly_update_schedule
 # and if /usr/sbin/yum-cron completes with a successful exit code (0) the
 # server will be rebooted
+#
+# This script has been designed to run via cron. An example:
+#########
+# # Run the patching script in the 3rd week of the month on Tuesday at 1am
+# 0 1 15-21 * * [ "$(date +\%a)" = "Tue" ] && /usr/local/bin/run_yum.sh -c
+#########
+# Note: the percent sign MUST be escaped when used in a cron command
 
 # Define temp file for Nagios to check and alert upon
 # DO NOT use variables within this variable - there is a scripted rm -f against
