@@ -17,7 +17,7 @@
 #        the (full-path) file to grep through, the third is a comma-delimited string of phrases or words to query, also containing the
 #        nagios alert state separated from the phrase by a hash #, and the fourth defines whether the file must exist or not, at all times.
 #        E.g:
-#             grep_file.sh 'Prod DB' '/var/log/mysql/mysql.log' 'Snapshot failed|Crit,No disk space|Crit,Timeout|Warning'
+#             grep_file.sh 'Prod DB' '/var/log/mysql/mysql.log' 'Snapshot failed|Crit,No disk space|Crit,Timeout|Warning' false
 #
 #        Each 'query' is processed in the order they appear - i.e. if 'Snapshot failed' is found, it will alert on that 
 #	       and exit the script, not continuing to search for 'No disk space' or 'Timeout'. 
@@ -25,7 +25,7 @@
 #        The phrase to be searched for is case-insensitive
 #
 # Limitations: 
-# ----------- Cannot search for a phrase that contains a comma or '|''' - to be resolved (eventually)
+# ----------- Cannot search for a phrase that contains a comma or '|' - to be resolved (eventually)
 #
 
 
@@ -52,7 +52,7 @@ if [ "$file_must_exist" = true ]; then
   fi
 fi
 
-# Loop through array searching for each query, ordered by first-in,first-checked
+# Loop through array searching for each query, ordered by first-in, first-checked
 for((i=0; i<${#queries[@]}; ++i)); do
   # Separate out query and nagios alert value from array string
   query="$(cut -d '|' -f1 <<< ${queries[$i]})"
